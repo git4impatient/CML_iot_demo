@@ -1,0 +1,1 @@
+sudo /opt/cloudera/cem/efm/bin/efm.sh start

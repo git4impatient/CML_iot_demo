@@ -1,0 +1,4 @@
+# too slow ./genNormalDistrib.py | mosquitto_pub -h localhost  -t iot -l
+./genNormalDistrib.py > iotdata.csv
+
+
