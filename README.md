@@ -10,3 +10,4 @@ Run the three pip-install commands
 Stop and restart the session
 Open a command line terminal and run the data generator   ./goLocalFile
 In your workbench session click  "run all" and you're good to go
+ 
