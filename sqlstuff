@@ -1,0 +1,42 @@
+-- hive/impala offer schema on read
+-- create a table that provides "super-grep"
+
+drop table martyiotonecol;
+create external table martyiotonecol 
+( 
+myonecolumn string)
+row format delimited
+fields terminated by '\t'
+stored as textfile
+ location 's3a://cdp-sandbox-default-se/datalake/warehouse/martyiotdatadir'
+TBLPROPERTIES
+('transactional'='false')
+;
+
+-- now create a table that will parse out all the different columns
+create table martyiotdata (
+deviceid int,
+sensor1 float,
+sensor2 float,
+sensor3 float,
+sensor4 float,
+label int)
+row format delimited
+fields terminated by '|'
+stored as textfile
+ location 's3a://cdp-sandbox-default-se/datalake/warehouse/martyiotdatadir'
+TBLPROPERTIES
+('transactional'='false')
+;
+
+-- create some lineage to illustrate governance
+create table martyiotlineage1 TBLPROPERTIES
+('transactional'='false') as select * from martyiotdata;
+
+create table martyiotlineage3 TBLPROPERTIES
+('transactional'='false') as select a.* from martyiotlineage2 a, martyiotdata b 
+where a.deviceid=b.deviceid;
+
+select * from martyiotonecol limit 5;
+select * from martyiotdata limit 5;
+select * from martyiotlineage3 limit 5;
