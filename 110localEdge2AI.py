@@ -1,8 +1,7 @@
 # 
 ## Edge2AI 
 ## Model to predict if an edge device will fail
-# keras requires python 2  / get tensorflow import error
-# see forked project
+# use pip3 for keras, tensorflow
 # debugging pairplot 
 # cast all variables to float - it choked on the decimal mixed with float
 # limited the number of points in the query to 5000 - cuts way down on the plot time
@@ -38,6 +37,8 @@ myspark.sql("SET spark.sql.parquet.binaryAsString=true")
 # if comma delimited then: iotrawdf = myspark.read.csv('iotdata.csv', header='true')
 iotrawdf=myspark.read.option("delimiter", "|").csv("iotdata.csv", header="true") 
 # also read from s3 mydf = myspark.read.parquet ( "s3a://impalas3a/sample_07_s3a_parquet")
+# iotrawdf=myspark.read.option("delimiter", "|").csv("s3a://cdp-sandbox-default-se/datalake/iotdata.csv", header="true") 
+
 # print number of rows and type of object
 iotrawdf.cache()
 print ( iotrawdf.count() )
@@ -77,7 +78,7 @@ pdsdf.head()
 sns.set(style="ticks" , color_codes=True)
 # this takes a long time to run:  
 # you can see it if you uncomment it
-g = sns.pairplot(pdsdf,  hue="label" )
+#g = sns.pairplot(pdsdf,  hue="label" )
 
 ## Predict if edge device will fail
 
@@ -93,10 +94,10 @@ iotdf = myspark.sql('select float(label), float(sensor1), float(sensor2), float(
 # 
 # need to convert from text field to numeric
 # this is a common requirement when using sparkML
-#from pyspark.ml.feature import StringIndexer
+# from pyspark.ml.feature import StringIndexer
 # this will convert each unique string into a numeric
-#indexer = StringIndexer(inputCol="property_state", outputCol="loc_state")
-#indexed = indexer.fit(lndf).transform(lndf)
+# indexer = StringIndexer(inputCol="property_state", outputCol="loc_state")
+# indexed = indexer.fit(lndf).transform(lndf)
 # indexed.show(5)
 ## First try a logistic regression 
 # now we need to create  a  "label" and "features"
@@ -201,10 +202,13 @@ print("areaUnderROC: " + str(trainingSummary.areaUnderROC))
 ## can we do better with a deep learning keras network?
 #https://medium.com/datadriveninvestor/building-neural-network-using-keras-for-classification-3a3656c726c1
 
-#  stop and restart session after install 
-# requires python2 :-()
+#  stop and restart session after install  
+# use pip3 for Python3
+# restart may not be required for python3
 #!pip install --upgrade --force-reinstall tensorflow
+#!pip3 install tensorflow
 #!pip install --upgrade --force-reinstall keras
+#!pip3 install keras
 import tensorflow as tf
 import keras as ks
 from keras import Sequential 
@@ -265,6 +269,11 @@ classifier.compile(optimizer ='adam',loss='binary_crossentropy', metrics =['accu
 #tbcallback = tb.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0, write_graph=True, write_images=True)
 
 #Fitting the data to the training dataset
+# epocs - how many times do you grind through the training dataset
+# batch size - how many samples to examine before updating
+#   the model.  You could use a batch size of 1 
+#   as the dataset gets bigger batch of 1 will 
+#   impact performance
 #classifier.fit(X,y, batch_size=10, epochs=50, verbose=1, callbacks=[tbcallback])
 # the small batch size of 10 is hurting performance
 # moving to 32
@@ -277,11 +286,11 @@ classifier.fit(X,y, batch_size=8, epochs=10, verbose=1)
 eval_model=classifier.evaluate(X, y)
 eval_model
 
-#!pip install sklearn
+#!pip3 install sklearn
 
 y_pred=classifier.predict(X)
 y_pred =(y_pred>0.35)
-# confusion matrix - barely correct when true
+# confusion matrix - lots of jokes here
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y, y_pred)
 print(cm)
@@ -308,4 +317,5 @@ from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y, y_pred)
 print(cm)
 
+!rm -rf mymodel
 classifier.save ("mymodel")

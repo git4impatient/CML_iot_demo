@@ -203,8 +203,8 @@ print("areaUnderROC: " + str(trainingSummary.areaUnderROC))
 
 #  stop and restart session after install 
 # requires python2 :-()
-#!pip install --upgrade --force-reinstall tensorflow
-#!pip install --upgrade --force-reinstall keras
+#!pip3 install --upgrade --force-reinstall tensorflow
+#!pip3 install --upgrade --force-reinstall keras
 import tensorflow as tf
 import keras as ks
 from keras import Sequential 
@@ -277,7 +277,7 @@ classifier.fit(X,y, batch_size=8, epochs=10, verbose=1)
 eval_model=classifier.evaluate(X, y)
 eval_model
 
-#!pip install sklearn
+#!pip3 install sklearn
 
 y_pred=classifier.predict(X)
 y_pred =(y_pred>0.35)

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # how many data points in the time sereies
-numrows=50000
+numrows=250000
 # go build it
 import random
 # get now
@@ -16,7 +16,7 @@ for x in range(1,numrows):
         myswap=abs(random.gauss(.5,.2 ))
         myjobs=abs(random.gauss(.5,.1 ))
         mynop=abs(random.gauss(100,20 ))
-        if ( mytemp+myswap+myjobs > 2 and mytemp+myswap+myjobs < 2.2 ):
+        if ( mytemp+myswap+myjobs > 2 and mytemp+myswap+myjobs < 2.5 ):
           myfail=1
         else:
           myfail=0
